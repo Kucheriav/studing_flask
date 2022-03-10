@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Work log</h1>
+    {%for job on jobs%}
+        <h2>Action #{{loop.index}}</h2>
+        <table>
+            <tr>
+                <th>Title of activity</th>
+                <th>Team Leader</th>
+                <th>Duration</th>
+                <th>Collaborators</th>
+                <th>Is finished</th>
+            </tr>
+            <tr>
+                <td>{{job.job}}</td>
+                <td></td>
+            </tr>
+
+        </table>
+    {%endfor%}
+{% endblock %}

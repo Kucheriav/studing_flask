@@ -2,8 +2,10 @@ from flask import Flask, render_template, redirect
 from data import db_session
 from flask_login import LoginManager, login_user, login_required, logout_user, user_logged_out
 from data.users import User
+from data.jobs import Jobs
 from login_form import LoginForm
 from register_form import RegisterForm
+from add_job import AddJob
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -59,6 +61,25 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+@app.route('/addjob', methods=['GET', 'POST'])
+def addjob():
+    form = AddJob()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        job = Jobs(
+            collaborators=form.collaborators.data,
+            job=form.job.data,
+            work_size=form.work_size.data,
+            start_date=form.start_date.data,
+            end_date=form.end_date.data,
+            team_leader=form.team_leader.data
+        )
+        db_sess.add(job)
+        db_sess.commit()
+        return redirect("/")
+    return render_template('adding_job.html', title='Добавление работы', form=form)
+
 
 @app.route('/logout')
 @login_required
