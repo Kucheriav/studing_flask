@@ -1,11 +1,14 @@
 from flask import Flask, render_template, redirect
-from data import db_session
+from data import db_session, jobs_api
 from flask_login import LoginManager, login_user, login_required, logout_user, user_logged_out
 from data.users import User
 from data.jobs import Jobs
 from login_form import LoginForm
 from register_form import RegisterForm
 from add_job import AddJob
+from flask_restful import reqparse, abort, Api, Resource
+import news_resources, users_resource
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -87,4 +90,11 @@ def logout():
     logout_user()
     return redirect("/")
 
+
+app.register_blueprint(jobs_api.blueprint)
+api = Api(app)
+api.add_resource(news_resources.NewsListResource, '/api/v2/news')
+api.add_resource(news_resources.NewsResource, '/api/v2/news/<int:news_id>')
+api.add_resource(users_resource.UsersListResource, '/api/v2/users')
+api.add_resource(users_resource.UsersResource, '/api/v2/users/<int:user_id>')
 app.run(port=8080, host='127.0.0.1')
